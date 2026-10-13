@@ -139,3 +139,43 @@
 	clip: rect(0 0 0 0);
 	white-space: nowrap;
 }
+
+/* Details panel on a single Floor page. */
+.floor-catalog__details {
+	margin-top: 2rem;
+	padding: 1.25rem;
+	border: 1px solid var(--fc-border);
+	border-radius: var(--fc-radius);
+}
+
+.floor-catalog__specs {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 1rem;
+	margin: 0 0 1.25rem;
+}
+
+.floor-catalog__specs dt {
+	color: var(--fc-muted);
+	font-size: 0.85rem;
+}
+
+.floor-catalog__specs dd {
+	margin: 0.15rem 0 0;
+	font-weight: 600;
+}
+
+.floor-catalog__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+}
+
+.floor-catalog__details .floor-catalog__button {
+	margin-top: 0;
+}
+
+.floor-catalog__back {
+	color: var(--fc-accent);
+}

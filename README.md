@@ -8,6 +8,7 @@ A WordPress plugin for flooring retailers. Add your floors in WP Admin, then sho
 - **Material** taxonomy (Hardwood, Tile, Vinyl…) shown as a column in the admin list
 - **Floor Details** fields: color, finish, price per sq ft, and a room-visualizer link
 - **`[floor_catalog]` shortcode**: mobile-first card grid with filter buttons by material
+- **Floor detail pages**: each floor's own page shows its material, color, finish, price and visualizer button
 - Accessible: real buttons with `aria-pressed`, a live region announcing results, visible focus styles, 44px touch targets
 - Fast: CSS and JS load only on pages that use the shortcode; no jQuery
 - Secure: nonces, capability checks, sanitized input, escaped output
@@ -35,7 +36,8 @@ floor-catalog/
 ├── includes/
 │   ├── post-type.php        Floors post type + Material taxonomy
 │   ├── meta-box.php         Floor Details fields (save + security checks)
-│   └── shortcode.php        [floor_catalog] grid
+│   ├── shortcode.php        [floor_catalog] grid
+│   └── single.php           Details panel on each Floor's page
 └── assets/
     ├── floor-catalog.css    Mobile-first grid styles
     └── floor-catalog.js     Filter buttons
