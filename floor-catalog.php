@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Floor Catalog
  * Description:       A simple product catalog for flooring retailers: add floors in WP Admin and show them in a filterable grid with the [floor_catalog] shortcode.
- * Version:           1.1.0
+ * Version:           1.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Kingsley Okine
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Constants we reuse everywhere. Prefix everything with "floor_catalog" / "FLOOR_CATALOG"
 // so our names never clash with WordPress core or other plugins.
-define( 'FLOOR_CATALOG_VERSION', '1.1.0' );
+define( 'FLOOR_CATALOG_VERSION', '1.4.0' );
 define( 'FLOOR_CATALOG_PATH', plugin_dir_path( __FILE__ ) ); // Server path, for PHP includes.
 define( 'FLOOR_CATALOG_URL', plugin_dir_url( __FILE__ ) );   // Web URL, for CSS/JS files.
 
@@ -33,6 +33,8 @@ require_once FLOOR_CATALOG_PATH . 'includes/post-type.php';  // The "Floors" con
 require_once FLOOR_CATALOG_PATH . 'includes/meta-box.php';   // Extra fields: color, finish, price, visualizer link.
 require_once FLOOR_CATALOG_PATH . 'includes/shortcode.php';  // The [floor_catalog] grid on the front end.
 require_once FLOOR_CATALOG_PATH . 'includes/single.php';     // Details panel on each Floor's own page.
+require_once FLOOR_CATALOG_PATH . 'includes/templates.php';  // Block templates for /floors/ and single Floor pages.
+require_once FLOOR_CATALOG_PATH . 'includes/block.php';      // The Floor Catalog block (reuses the shortcode).
 
 /**
  * Runs once when the plugin is activated.
