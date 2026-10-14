@@ -48,15 +48,28 @@ add_action( 'init', 'floor_catalog_register_post_type' );
  * Register the floor_material taxonomy and attach it to our post type.
  */
 function floor_catalog_register_taxonomy() {
+	// Any label left out falls back to WordPress's "Category" wording, so we set them all.
+	$labels = array(
+		'name'              => __( 'Materials', 'floor-catalog' ),
+		'singular_name'     => __( 'Material', 'floor-catalog' ),
+		'search_items'      => __( 'Search Materials', 'floor-catalog' ),
+		'all_items'         => __( 'All Materials', 'floor-catalog' ),
+		'parent_item'       => __( 'Parent Material', 'floor-catalog' ),
+		'parent_item_colon' => __( 'Parent Material:', 'floor-catalog' ),
+		'edit_item'         => __( 'Edit Material', 'floor-catalog' ),
+		'view_item'         => __( 'View Material', 'floor-catalog' ),
+		'update_item'       => __( 'Update Material', 'floor-catalog' ),
+		'add_new_item'      => __( 'Add New Material', 'floor-catalog' ),
+		'new_item_name'     => __( 'New Material Name', 'floor-catalog' ),
+		'not_found'         => __( 'No materials found.', 'floor-catalog' ),
+		'back_to_items'     => __( '&larr; Go to Materials', 'floor-catalog' ),
+	);
+
 	register_taxonomy(
 		'floor_material',
 		'floor_product',
 		array(
-			'labels'            => array(
-				'name'          => __( 'Materials', 'floor-catalog' ),
-				'singular_name' => __( 'Material', 'floor-catalog' ),
-				'add_new_item'  => __( 'Add New Material', 'floor-catalog' ),
-			),
+			'labels'            => $labels,
 			'hierarchical'      => true,  // Behaves like Categories (checkboxes), not Tags.
 			'show_admin_column' => true,  // Shows the material in the Floors list table.
 			'show_in_rest'      => true,
