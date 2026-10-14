@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "floor-catalog/catalog",
+	"version": "1.4.0",
+	"title": "Floor Catalog",
+	"category": "widgets",
+	"icon": "grid-view",
+	"description": "A filterable grid of your floors, the same as the [floor_catalog] shortcode.",
+	"keywords": [ "floors", "catalog", "products" ],
+	"textdomain": "floor-catalog",
+	"attributes": {
+		"material": {
+			"type": "string",
+			"default": ""
+		},
+		"limit": {
+			"type": "number",
+			"default": 24
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "file:./index.js",
+	"style": "floor-catalog"
+}

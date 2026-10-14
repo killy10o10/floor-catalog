@@ -2,9 +2,9 @@
 /**
  * Adds a details panel to each Floor's own page (e.g. /floors/natural-oak/).
  *
- * Block themes show a single Floor with their normal blog-post template, which only
- * prints the title, image and content. We use the "the_content" filter to append the
- * material, color, finish, price and visualizer button after the content.
+ * Single Floor templates (ours in includes/templates.php, or a theme's) only print the
+ * title, image and content. We use the "the_content" filter to append the material,
+ * color, finish, price and visualizer button after the content, so it works in any theme.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

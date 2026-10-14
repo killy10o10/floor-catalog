@@ -1,78 +1,188 @@
 /* Floor Catalog: mobile-first styles. Colors use custom properties so a theme can override them. */
 
+/*
+ * Text and background use the theme's palette (theme.json "base" / "contrast") when it has one,
+ * so the grid matches light and dark themes. The hex values are fallbacks for classic themes.
+ */
 .floor-catalog {
 	--fc-accent: #2f5d50;
-	--fc-text: #1f2328;
+	--fc-text: var(--wp--preset--color--contrast, #1f2328);
+	--fc-bg: var(--wp--preset--color--base, #ffffff);
 	--fc-muted: #5b636b;
 	--fc-border: #e2e4e7;
-	--fc-bg: #ffffff;
-	--fc-radius: 10px;
+	--fc-radius: 12px;
+	--fc-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
 	color: var(--fc-text);
+	font-family: inherit;
 }
 
+/* Where supported, derive muted text and borders from the theme colors (72% stays above AA contrast). */
+@supports (color: color-mix(in srgb, red, blue)) {
+	.floor-catalog {
+		--fc-muted: color-mix(in srgb, var(--fc-text) 72%, var(--fc-bg));
+		--fc-border: color-mix(in srgb, var(--fc-text) 14%, var(--fc-bg));
+	}
+}
+
+/*
+ * Reset theme styles on our buttons and links, so padding, line-height and underlines
+ * from the theme don't leak in. Component rules below use two classes (.floor-catalog .x)
+ * so they always beat this reset and typical theme selectors like "button" or ".entry-content a".
+ */
+.floor-catalog button,
+.floor-catalog a {
+	box-sizing: border-box;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	box-shadow: none;
+}
+
+.floor-catalog p,
+.floor-catalog h3 {
+	margin: 0;
+}
+
+/* ---------- Filter pills ---------- */
+
+/* Phones: one row that scrolls sideways. The padding keeps focus rings from being clipped. */
 .floor-catalog__filters {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-	margin: 0 0 1.5rem;
+	flex-wrap: nowrap;
+	gap: 8px;
+	margin: 0 0 20px;
+	padding: 4px;
+	overflow-x: auto;
+	scrollbar-width: thin;
 }
 
-.floor-catalog__filter {
-	padding: 0.5rem 1rem;
-	border: 1px solid var(--fc-border);
+.floor-catalog .floor-catalog__filter {
+	position: relative; /* For the touch-area pseudo-element. */
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	height: 40px;
+	padding: 0 16px;
+	border: 1px solid #d9d6d0;
 	border-radius: 999px;
-	background: var(--fc-bg);
-	color: var(--fc-text);
-	font: inherit;
+	background: #ffffff;
+	color: #1f2328;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
 	cursor: pointer;
-	min-height: 44px; /* Comfortable touch target. */
 }
 
-.floor-catalog__filter:hover {
+.floor-catalog .floor-catalog__filter:hover {
+	border-color: #1f2328;
+}
+
+.floor-catalog .floor-catalog__filter.is-active {
 	border-color: var(--fc-accent);
-}
-
-.floor-catalog__filter.is-active {
 	background: var(--fc-accent);
-	border-color: var(--fc-accent);
-	color: #fff;
+	color: #ffffff;
 }
 
-.floor-catalog__filter:focus-visible,
-.floor-catalog__button:focus-visible,
-.floor-catalog__title a:focus-visible {
-	outline: 3px solid var(--fc-accent);
-	outline-offset: 2px;
+.floor-catalog__count {
+	font-size: 12px;
+	font-weight: 600;
+	opacity: 0.75;
 }
 
-/* One column on phones, more as space allows. No media queries needed. */
+/* ---------- Grid ---------- */
+
+/*
+ * The grid responds to its own width (a container query), not the screen's, so it
+ * lays out correctly in a wide archive page or a narrow content column alike.
+ */
+.floor-catalog--grid {
+	container: floor-catalog / inline-size;
+}
+
+/* Browsers without container queries fit as many 240px cards as they can. */
 .floor-catalog__grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
-	gap: 1.25rem;
+	gap: 24px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
+/* Where container queries work, they replace the fallback: 1 column by default... */
+@container floor-catalog (min-width: 0px) {
+	.floor-catalog__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ...2 per row from 500px of grid (about a 600px screen once theme padding is taken off)... */
+@container floor-catalog (min-width: 500px) {
+	.floor-catalog__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	/* Enough room now, so the pills can wrap instead of scrolling. */
+	.floor-catalog__filters {
+		flex-wrap: wrap;
+		overflow-x: visible;
+	}
+}
+
+/* ...and 3 per row from 900px. */
+@container floor-catalog (min-width: 900px) {
+	.floor-catalog__grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* ---------- Card ---------- */
+
 .floor-catalog__card {
 	display: flex;
 	flex-direction: column;
+	height: 100%; /* Grid rows stretch, so every card in a row is the same height. */
+	margin: 0;
 	border: 1px solid var(--fc-border);
 	border-radius: var(--fc-radius);
 	background: var(--fc-bg);
 	overflow: hidden;
 }
 
+.floor-catalog__card:hover,
+.floor-catalog__card:focus-within {
+	box-shadow: var(--fc-shadow);
+}
+
 .floor-catalog__card[hidden] {
 	display: none;
+}
+
+.floor-catalog__media {
+	position: relative;
+	overflow: hidden; /* Keeps the zoomed image inside its frame. */
+}
+
+.floor-catalog .floor-catalog__image {
+	display: block;
 }
 
 .floor-catalog__image img,
 .floor-catalog__placeholder {
 	display: block;
 	width: 100%;
-	aspect-ratio: 4 / 3;
+	height: auto;
+	margin: 0;
+	aspect-ratio: 3 / 2;
 	object-fit: cover;
 }
 
@@ -80,54 +190,171 @@
 	background: repeating-linear-gradient(90deg, #d9cbb5 0 22%, #cdbda4 22% 25%);
 }
 
+.floor-catalog__badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	padding: 5px 10px;
+	border-radius: 999px;
+	background: rgb(255 255 255 / 0.9);
+	color: #1f2328;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	pointer-events: none; /* Clicks pass through to the image link. */
+}
+
 .floor-catalog__body {
 	display: flex;
 	flex: 1;
 	flex-direction: column;
-	gap: 0.35rem;
-	padding: 1rem;
+	gap: 6px;
+	padding: 16px 18px 18px;
 }
 
-.floor-catalog__title {
-	margin: 0;
-	font-size: 1.1rem;
+.floor-catalog .floor-catalog__title {
+	font-size: 18px;
+	font-weight: 600;
 	line-height: 1.3;
 }
 
-.floor-catalog__title a {
+.floor-catalog .floor-catalog__title a {
 	color: inherit;
-	text-decoration: none;
 }
 
-.floor-catalog__title a:hover {
+.floor-catalog .floor-catalog__title a:hover {
 	text-decoration: underline;
 }
 
-.floor-catalog__meta {
-	margin: 0;
-	color: var(--fc-muted);
-	font-size: 0.9rem;
-}
-
 .floor-catalog__price {
-	margin: 0.25rem 0 0;
-	font-weight: 600;
+	color: var(--fc-muted);
+	font-size: 13px;
+	line-height: 1.3;
+	white-space: nowrap;
 }
 
-.floor-catalog__button {
-	align-self: flex-start;
+.floor-catalog__amount {
+	color: var(--fc-text);
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.floor-catalog__meta {
+	color: var(--fc-muted);
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+/* Two lines max, then an ellipsis. */
+.floor-catalog__excerpt {
+	display: -webkit-box;
+	overflow: hidden;
+	color: var(--fc-muted);
+	font-size: 14px;
+	line-height: 1.5;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+}
+
+/* margin-top: auto pins the button to the bottom of the card; the padding keeps it off the text. */
+.floor-catalog__footer {
 	margin-top: auto;
-	padding: 0.6rem 1rem;
-	border-radius: 6px;
+	padding-top: 10px;
+}
+
+/* ---------- Button (cards and the single Floor page) ---------- */
+
+.floor-catalog .floor-catalog__button {
+	position: relative; /* For the touch-area pseudo-element. */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 40px;
+	padding: 0 14px;
+	border: 1px solid var(--fc-accent);
+	border-radius: 8px;
+	background: transparent;
+	color: var(--fc-accent);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.floor-catalog .floor-catalog__button:hover {
 	background: var(--fc-accent);
-	color: #fff;
-	text-decoration: none;
+	color: #ffffff;
+}
+
+/* Pills and buttons look 40px tall but take taps across 46px (WCAG target size). */
+.floor-catalog .floor-catalog__filter::before,
+.floor-catalog .floor-catalog__button::before {
+	content: "";
+	position: absolute;
+	inset: -3px 0;
+}
+
+/* ---------- Focus and motion ---------- */
+
+.floor-catalog .floor-catalog__filter:focus-visible,
+.floor-catalog .floor-catalog__button:focus-visible,
+.floor-catalog .floor-catalog__title a:focus-visible {
+	outline: 3px solid var(--fc-accent);
+	outline-offset: 2px;
+}
+
+/* Movement only for people who haven't asked their OS to reduce motion. */
+@media (prefers-reduced-motion: no-preference) {
+	.floor-catalog__card {
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.floor-catalog__card:hover,
+	.floor-catalog__card:focus-within {
+		transform: translateY(-3px);
+	}
+
+	.floor-catalog__image img {
+		transition: transform 0.4s ease;
+	}
+
+	.floor-catalog__card:hover .floor-catalog__image img {
+		transform: scale(1.04);
+	}
+
+	.floor-catalog .floor-catalog__filter,
+	.floor-catalog .floor-catalog__button {
+		transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+	}
+}
+
+/* ---------- Empty state ---------- */
+
+.floor-catalog__empty {
+	padding: 2.5rem 1.5rem;
+	border: 1px dashed var(--fc-border);
+	border-radius: var(--fc-radius);
+	text-align: center;
+}
+
+.floor-catalog .floor-catalog__empty p {
+	margin: 0.5rem 0 0;
+	color: var(--fc-muted);
+}
+
+.floor-catalog .floor-catalog__empty .floor-catalog__empty-title {
+	margin: 0;
+	color: var(--fc-text);
+	font-size: 1.15rem;
 	font-weight: 600;
 }
 
-.floor-catalog__button:hover {
-	filter: brightness(1.1);
-	color: #fff;
+.floor-catalog .floor-catalog__empty a {
+	color: var(--fc-accent);
+	text-decoration: underline;
 }
 
 /* Hidden visually, still read by screen readers (in case the theme doesn't define it). */
@@ -140,7 +367,8 @@
 	white-space: nowrap;
 }
 
-/* Details panel on a single Floor page. */
+/* ---------- Details panel on a single Floor page ---------- */
+
 .floor-catalog__details {
 	margin-top: 2rem;
 	padding: 1.25rem;
@@ -165,17 +393,15 @@
 	font-weight: 600;
 }
 
+.floor-catalog .floor-catalog__specs a,
+.floor-catalog .floor-catalog__back {
+	color: var(--fc-accent);
+	text-decoration: underline;
+}
+
 .floor-catalog__actions {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 1rem;
-}
-
-.floor-catalog__details .floor-catalog__button {
-	margin-top: 0;
-}
-
-.floor-catalog__back {
-	color: var(--fc-accent);
 }
